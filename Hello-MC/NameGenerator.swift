@@ -13,4 +13,7 @@ struct NameGenerator {
   func generate() -> String {
     "Jenn Doe"
   }
+  func generateMale() -> String {
+    "James Dough"
+  }
 }
