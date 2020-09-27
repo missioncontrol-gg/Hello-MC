@@ -46,6 +46,3 @@ jobs:
       env:
         DANGER_GITHUB_API_TOKEN: ${{ secrets.MOBILE_CI_GITHUB_API_TOKEN }}
 
-    # - name: Danger action
-    #   uses: MeilCli/danger-action@v5.0.0
-
