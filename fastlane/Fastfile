@@ -13,13 +13,51 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+
+SCHEME_APP = 'Hello-MC'
+SCHEME_TEST_UNIT = 'Hello-MC'
+SCHEME_TEST_UI = 'Hello-MC-test-ui'
+SCHEME_TEST_ALL = 'Hello-MC-test-all'
+
 default_platform(:ios)
 
 platform :ios do
 
-  desc "RUN TESTS"
-  lane :test do
-    run_tests(scheme: 'Hello-MC',
+  desc "CI run on PRs"
+  lane :ci_pr do
+    test_build
+    test_unit
+    test_ui
+    # cover
+  end
+
+  lane :test_build do
+    run_tests(scheme: SCHEME_TEST_ALL,
+              build_for_testing: true)
+  end
+
+  desc "Run UNIT tests"
+  lane :test_unit do
+    run_tests(scheme: SCHEME_TEST_UNIT,
+              derived_data_path: lane_context[SharedValues::SCAN_DERIVED_DATA_PATH],
+              skip_build: true,
               devices: ["iPhone 11"])
+  end
+
+  desc "Run UI tests"
+  lane :test_ui do
+    run_tests(scheme: SCHEME_TEST_UI,
+              derived_data_path: lane_context[SharedValues::SCAN_DERIVED_DATA_PATH],
+              skip_build: true,
+              devices: ["iPhone 11"])
+  end
+
+  lane :cover do
+    sh(%{ 
+      pwd;
+      rm -rf xcov_report
+      })
+    xcov(project: 'Hello-MC.xcodeproj',
+         scheme: SCHEME_TEST_ALL)
   end
 end
